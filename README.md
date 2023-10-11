@@ -10,7 +10,7 @@ View metrics at http://localhost:2112/metrics
 
 ## Run Benthos pipeline
 ```
-benthos -c config.yaml
+benthos -c benthos-config.yaml
 ```
 
 ## Run Prometheus server

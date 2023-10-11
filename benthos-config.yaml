@@ -9,33 +9,48 @@ input:
     count: 100000000
     interval: ""
     mapping: |
-      root = counter()
+      this = root
+      root.answer = counter()
+      root.contract = if root.answer % 2 == 0 {
+         "a"
+      } else {
+        "b"
+      }
 
 pipeline:
   threads: -1
   processors:
+    - label: "sleep"
+      sleep:
+        duration: "5s"
     - label: "log_line"
       log:
         level: INFO
         fields_mapping: ""
         message: "${! this }"
-    # - label: "filter"
-    #   bloblang: |
-    #     root = if this < 300000 {
-    #       deleted()
-    #     }
+    - label: "filter"
+      bloblang: |
+        root = if this.answer < 10 {
+          deleted()
+        }
     - label: mock_benthos_gauge_metric
       metric:
         type: gauge
         name: mock_benthos_gauge
-        labels: {}
-        value: "${! this }"
+        labels:  
+          contract: "${! this.contract }"
+        value: "${! this.answer }"
+    - label: mock_benthos_gauge_metric_no_label
+      metric:
+        type: gauge
+        name: mock_benthos_gauge_no_label
+        value: "${! this.answer }"
     - label: mock_benthos_counter_metric
       metric:
         type: counter
         name: mock_benthos_counter
-        labels: {}
-
+        labels:  
+          contract: "${! this.contract }"
 output:
   label: "noop"
   drop: {}

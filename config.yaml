@@ -1,0 +1,50 @@
+http:
+  enabled: true
+  address: 0.0.0.0:4195
+  root_path: /
+  debug_endpoints: false
+
+input:
+  generate:
+    count: 100000000
+    interval: ""
+    mapping: |
+      root = counter()
+
+pipeline:
+  threads: -1
+  processors:
+    - label: "log_line"
+      log:
+        level: INFO
+        fields_mapping: ""
+        message: "${! this }"
+    # - label: "filter"
+    #   bloblang: |
+    #     root = if this < 300000 {
+    #       deleted()
+    #     }
+    - label: mock_benthos_gauge_metric
+      metric:
+        type: gauge
+        name: mock_benthos_gauge
+        labels: {}
+        value: "${! this }"
+    - label: mock_benthos_counter_metric
+      metric:
+        type: counter
+        name: mock_benthos_counter
+        labels: {}
+
+output:
+  label: "noop"
+  drop: {}
+
+logger:
+  level: ${LOG_LEVEL:INFO}
+  format: logfmt
+  add_timestamp: true
+  timestamp_name: time
+  message_name: msg
+  static_fields:
+    '@service': test-benthos-pipeline

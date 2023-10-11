@@ -1,4 +1,4 @@
-Example project with a Go Prometheus client, to test Prometheus reading metrics.
+Example project with Go and Benthos Prometheus metrics producers, to test how Prometheus reads metrics.
 
 ## Run Go client
 ```
@@ -6,6 +6,12 @@ go run main.go
 ```
 
 View metrics at http://localhost:2112/metrics
+
+
+## Run Benthos pipeline
+```
+benthos -c config.yaml
+```
 
 ## Run Prometheus server
 ```

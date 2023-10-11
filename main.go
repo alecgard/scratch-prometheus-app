@@ -24,7 +24,7 @@ func recordMetrics() {
 			opsProcessedGauge.Add(1)
 			v++
 			fmt.Printf("Metrics incremented: %d \n", v)
-			time.Sleep(2 * time.Second)
+			time.Sleep(1 * time.Millisecond)
 		}
 	}()
 }
